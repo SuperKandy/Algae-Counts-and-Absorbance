@@ -2,152 +2,213 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Algae Feeding Calculator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wartburg Algae Feeding Calculator</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="wklogo.png">
+  <link rel="apple-touch-icon" href="wklogo.png">
+
   <style>
-    body { font-family: Arial, sans-serif; max-width: 880px; margin: 40px auto; padding: 0 16px; }
-    h1 { margin-bottom: 6px; }
-    .muted { color: #555; margin-top: 0; }
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 18px; }
-    .card { border: 1px solid #ddd; border-radius: 12px; padding: 16px; }
-    label { display: block; font-weight: 600; margin: 10px 0 6px; }
-    input { width: 100%; padding: 10px; border: 1px solid #bbb; border-radius: 10px; font-size: 16px; }
-    .out { font-size: 18px; line-height: 1.7; }
-    .big { font-size: 22px; font-weight: 800; }
-    .warn { color: #a40000; font-weight: 700; }
-    .small { font-size: 13px; color: #666; }
-    button { padding: 10px 14px; border-radius: 10px; border: 1px solid #333; background: #fff; cursor: pointer; }
-    button:hover { background: #f2f2f2; }
-    @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 16px;
+      background-color: #f8f9fa;
+    }
+
+    h1 {
+      margin-bottom: 4px;
+    }
+
+    .muted {
+      color: #555;
+      margin-top: 0;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .header img {
+      height: 50px;
+      width: auto;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin: 12px 0 6px;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #bbb;
+      font-size: 15px;
+    }
+
+    button {
+      margin-top: 16px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid #333;
+      background: white;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    button:hover {
+      background: #f0f0f0;
+    }
+
+    .result {
+      font-size: 18px;
+      margin-top: 12px;
+    }
+
+    .big {
+      font-size: 22px;
+      font-weight: bold;
+      color: #003366;
+    }
+
+    .formula {
+      font-size: 13px;
+      margin-top: 14px;
+      color: #666;
+    }
+
+    .warning {
+      color: darkred;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 768px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
+
 <body>
-  <h1>Algae Feeding Calculator</h1>
-  <p class="muted">Enter absorbance (ABS) and get stock concentration and how many µL of stock algae to add per well.</p>
+
+  <div class="header">
+    <img src="wklogo.png" alt="Wartburg logo">
+    <img src="wclogo.png" alt="Wartburg College logo">
+    <div>
+      <h1>Wartburg Algae Feeding Calculator</h1>
+      <p class="muted">Enter absorbance (ABS) to calculate stock concentration and feeding volume.</p>
+    </div>
+  </div>
 
   <div class="grid">
+
     <div class="card">
       <h2>Inputs</h2>
 
-      <label for="abs">Absorbance (ABS)</label>
-      <input id="abs" type="number" step="0.0001" value="0.7" />
+      <label>Absorbance (ABS)</label>
+      <input id="abs" type="number" step="0.0001" value="0.7">
 
-      <label for="wellVol">Well volume (mL)</label>
-      <input id="wellVol" type="number" step="0.01" value="1.5" />
+      <label>Well volume (mL)</label>
+      <input id="wellVol" type="number" step="0.01" value="1.5">
 
-      <label for="targetConc">Target final concentration (cells/mL)</label>
-      <input id="targetConc" type="number" step="100" value="30000" />
+      <label>Target concentration (cells/mL)</label>
+      <input id="targetConc" type="number" step="100" value="30000">
 
-      <details style="margin-top:12px;">
-        <summary style="cursor:pointer; font-weight:700;">Calibration line (advanced)</summary>
-        <p class="small">From your plot: ABS = slope × (cells/mL) + intercept</p>
+      <details style="margin-top:14px;">
+        <summary style="cursor:pointer; font-weight:bold;">Calibration Line</summary>
 
-        <label for="slope">Slope</label>
-        <input id="slope" type="number" step="1e-9" value="0.0000003" />
+        <label>Slope</label>
+        <input id="slope" type="number" step="0.0000000001" value="0.0000003">
 
-        <label for="intercept">Intercept</label>
-        <input id="intercept" type="number" step="0.0001" value="0.0658" />
+        <label>Intercept</label>
+        <input id="intercept" type="number" step="0.0001" value="0.0658">
       </details>
 
-      <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
-        <button id="calcBtn" type="button">Calculate</button>
-        <button id="resetBtn" type="button">Reset defaults</button>
-      </div>
-
-      <p class="small" style="margin-top:12px;">
-        Note: If ABS is near/below the intercept, concentration will be ~0 or negative (not physically meaningful).
-      </p>
+      <button onclick="calculate()">Calculate</button>
     </div>
 
     <div class="card">
       <h2>Results</h2>
-      <div class="out">
-        <div>Stock concentration (cells/mL): <span class="big" id="stockConc">—</span></div>
-        <div>Volume of stock algae to add per well (µL): <span class="big" id="uL">—</span></div>
-        <div class="small" id="mlLine"></div>
-        <div class="warn" id="warning" style="margin-top:10px;"></div>
+
+      <div class="result">
+        Stock concentration (cells/mL):<br>
+        <span class="big" id="stockConc">—</span>
       </div>
 
-      <hr style="margin:16px 0; border:none; border-top:1px solid #eee;" />
+      <div class="result">
+        Volume of stock algae to add (µL per well):<br>
+        <span class="big" id="volumeUL">—</span>
+      </div>
 
-      <div class="small">
-        <div><b>Formulas used</b></div>
-        <div>cells/mL = (ABS − intercept) / slope</div>
-        <div>µL to add = 1000 × (targetConc × wellVol) / stockConc</div>
+      <div class="warning" id="warning"></div>
+
+      <div class="formula">
+        cells/mL = (ABS − intercept) / slope<br>
+        µL = 1000 × (target × wellVol) / stockConc
       </div>
     </div>
+
   </div>
 
   <script>
-    function n(id) { return document.getElementById(id); }
+    function calculate() {
 
-    function roundTo(x, decimals) {
-      if (!isFinite(x)) return "—";
-      const p = Math.pow(10, decimals);
-      return (Math.round(x * p) / p).toString();
-    }
+      const abs = parseFloat(document.getElementById("abs").value);
+      const wellVol = parseFloat(document.getElementById("wellVol").value);
+      const target = parseFloat(document.getElementById("targetConc").value);
+      const slope = parseFloat(document.getElementById("slope").value);
+      const intercept = parseFloat(document.getElementById("intercept").value);
 
-    function calc() {
-      const abs = parseFloat(n("abs").value);
-      const wellVol = parseFloat(n("wellVol").value);
-      const targetConc = parseFloat(n("targetConc").value);
-      const slope = parseFloat(n("slope").value);
-      const intercept = parseFloat(n("intercept").value);
+      const warningBox = document.getElementById("warning");
+      warningBox.textContent = "";
 
-      n("warning").textContent = "";
-
-      if (![abs, wellVol, targetConc, slope, intercept].every(v => isFinite(v))) {
-        n("warning").textContent = "Please enter valid numbers in all fields.";
-        n("stockConc").textContent = "—";
-        n("uL").textContent = "—";
-        n("mlLine").textContent = "";
+      if (!abs || !wellVol || !target || !slope) {
+        warningBox.textContent = "Please enter valid numbers.";
         return;
       }
 
-      if (slope === 0) {
-        n("warning").textContent = "Slope cannot be 0.";
-        return;
-      }
+      const stockConc = (abs - intercept) / slope;
 
-      const stockConc = (abs - intercept) / slope; // cells/mL
       if (stockConc <= 0) {
-        n("warning").textContent = "ABS is at/below intercept → calculated stock concentration is ≤ 0. Check blanking, cuvette, or calibration.";
+        warningBox.textContent = "Warning: ABS is near/below intercept. Check blank or calibration.";
       }
 
-      // desired total cells per well = targetConc * wellVol (mL) because units are cells/mL and mL
-      const desiredCellsPerWell = targetConc * wellVol;
+      const volume_mL = (target * wellVol) / stockConc;
+      const volume_uL = volume_mL * 1000;
 
-      // volume of stock to add in mL = desired cells / (cells/mL)
-      const volStock_mL = (stockConc > 0) ? (desiredCellsPerWell / stockConc) : NaN;
+      document.getElementById("stockConc").textContent =
+        Math.round(stockConc).toLocaleString();
 
-      // convert to µL (1 mL = 1000 µL)
-      const volStock_uL = volStock_mL * 1000;
-
-      // Display with useful rounding
-      n("stockConc").textContent = isFinite(stockConc) ? Math.round(stockConc).toLocaleString() : "—";
-      n("uL").textContent = isFinite(volStock_uL) ? roundTo(volStock_uL, 6) : "—";
-      n("mlLine").textContent = isFinite(volStock_mL) ? `(${roundTo(volStock_mL, 9)} mL of stock per well)` : "";
+      document.getElementById("volumeUL").textContent =
+        volume_uL.toFixed(6);
     }
 
-    function resetDefaults() {
-      n("abs").value = 0.7;
-      n("wellVol").value = 1.5;
-      n("targetConc").value = 30000;
-      n("slope").value = 0.0000003;
-      n("intercept").value = 0.0658;
-      calc();
-    }
-
-    n("calcBtn").addEventListener("click", calc);
-    n("resetBtn").addEventListener("click", resetDefaults);
-
-    // Auto-calc as user types
-    ["abs","wellVol","targetConc","slope","intercept"].forEach(id => {
-      n(id).addEventListener("input", calc);
-    });
-
-    // initial
-    calc();
+    calculate();
   </script>
+
 </body>
 </html>
