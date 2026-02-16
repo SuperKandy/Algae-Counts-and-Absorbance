@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Algae Feeding Calculator</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 880px; margin: 40px auto; padding: 0 16px; }
+    h1 { margin-bottom: 6px; }
+    .muted { color: #555; margin-top: 0; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 18px; }
+    .card { border: 1px solid #ddd; border-radius: 12px; padding: 16px; }
+    label { display: block; font-weight: 600; margin: 10px 0 6px; }
+    input { width: 100%; padding: 10px; border: 1px solid #bbb; border-radius: 10px; font-size: 16px; }
+    .out { font-size: 18px; line-height: 1.7; }
+    .big { font-size: 22px; font-weight: 800; }
+    .warn { color: #a40000; font-weight: 700; }
+    .small { font-size: 13px; color: #666; }
+    button { padding: 10px 14px; border-radius: 10px; border: 1px solid #333; background: #fff; cursor: pointer; }
+    button:hover { background: #f2f2f2; }
+    @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <h1>Algae Feeding Calculator</h1>
+  <p class="muted">Enter absorbance (ABS) and get stock concentration and how many µL of stock algae to add per well.</p>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Inputs</h2>
+
+      <label for="abs">Absorbance (ABS)</label>
+      <input id="abs" type="number" step="0.0001" value="0.7" />
+
+      <label for="wellVol">Well volume (mL)</label>
+      <input id="wellVol" type="number" step="0.01" value="1.5" />
+
+      <label for="targetConc">Target final concentration (cells/mL)</label>
+      <input id="targetConc" type="number" step="100" value="30000" />
+
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer; font-weight:700;">Calibration line (advanced)</summary>
+        <p class="small">From your plot: ABS = slope × (cells/mL) + intercept</p>
+
+        <label for="slope">Slope</label>
+        <input id="slope" type="number" step="1e-9" value="0.0000003" />
+
+        <label for="intercept">Intercept</label>
+        <input id="intercept" type="number" step="0.0001" value="0.0658" />
+      </details>
+
+      <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+        <button id="calcBtn" type="button">Calculate</button>
+        <button id="resetBtn" type="button">Reset defaults</button>
+      </div>
+
+      <p class="small" style="margin-top:12px;">
+        Note: If ABS is near/below the intercept, concentration will be ~0 or negative (not physically meaningful).
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>Results</h2>
+      <div class="out">
+        <div>Stock concentration (cells/mL): <span class="big" id="stockConc">—</span></div>
+        <div>Volume of stock algae to add per well (µL): <span class="big" id="uL">—</span></div>
+        <div class="small" id="mlLine"></div>
+        <div class="warn" id="warning" style="margin-top:10px;"></div>
+      </div>
+
+      <hr style="margin:16px 0; border:none; border-top:1px solid #eee;" />
+
+      <div class="small">
+        <div><b>Formulas used</b></div>
+        <div>cells/mL = (ABS − intercept) / slope</div>
+        <div>µL to add = 1000 × (targetConc × wellVol) / stockConc</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function n(id) { return document.getElementById(id); }
+
+    function roundTo(x, decimals) {
+      if (!isFinite(x)) return "—";
+      const p = Math.pow(10, decimals);
+      return (Math.round(x * p) / p).toString();
+    }
+
+    function calc() {
+      const abs = parseFloat(n("abs").value);
+      const wellVol = parseFloat(n("wellVol").value);
+      const targetConc = parseFloat(n("targetConc").value);
+      const slope = parseFloat(n("slope").value);
+      const intercept = parseFloat(n("intercept").value);
+
+      n("warning").textContent = "";
+
+      if (![abs, wellVol, targetConc, slope, intercept].every(v => isFinite(v))) {
+        n("warning").textContent = "Please enter valid numbers in all fields.";
+        n("stockConc").textContent = "—";
+        n("uL").textContent = "—";
+        n("mlLine").textContent = "";
+        return;
+      }
+
+      if (slope === 0) {
+        n("warning").textContent = "Slope cannot be 0.";
+        return;
+      }
+
+      const stockConc = (abs - intercept) / slope; // cells/mL
+      if (stockConc <= 0) {
+        n("warning").textContent = "ABS is at/below intercept → calculated stock concentration is ≤ 0. Check blanking, cuvette, or calibration.";
+      }
+
+      // desired total cells per well = targetConc * wellVol (mL) because units are cells/mL and mL
+      const desiredCellsPerWell = targetConc * wellVol;
+
+      // volume of stock to add in mL = desired cells / (cells/mL)
+      const volStock_mL = (stockConc > 0) ? (desiredCellsPerWell / stockConc) : NaN;
+
+      // convert to µL (1 mL = 1000 µL)
+      const volStock_uL = volStock_mL * 1000;
+
+      // Display with useful rounding
+      n("stockConc").textContent = isFinite(stockConc) ? Math.round(stockConc).toLocaleString() : "—";
+      n("uL").textContent = isFinite(volStock_uL) ? roundTo(volStock_uL, 6) : "—";
+      n("mlLine").textContent = isFinite(volStock_mL) ? `(${roundTo(volStock_mL, 9)} mL of stock per well)` : "";
+    }
+
+    function resetDefaults() {
+      n("abs").value = 0.7;
+      n("wellVol").value = 1.5;
+      n("targetConc").value = 30000;
+      n("slope").value = 0.0000003;
+      n("intercept").value = 0.0658;
+      calc();
+    }
+
+    n("calcBtn").addEventListener("click", calc);
+    n("resetBtn").addEventListener("click", resetDefaults);
+
+    // Auto-calc as user types
+    ["abs","wellVol","targetConc","slope","intercept"].forEach(id => {
+      n(id).addEventListener("input", calc);
+    });
+
+    // initial
+    calc();
+  </script>
+</body>
+</html>
