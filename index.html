@@ -2,287 +2,313 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Wartburg Algae Feeding Calculator</title>
 
 <link rel="icon" type="image/png" href="wklogo.png">
 
 <style>
-* {
-  box-sizing: border-box;
-}
+  :root{
+    --accent: #F36F21;       /* Wartburg orange */
+    --accent-dark: #d95f15;
+    --bg: #f4f6f9;
+    --text: #1a1a1a;
+    --muted: #555;
+  }
 
-html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  overflow-x: hidden; /* 🔒 locks horizontal scrolling */
-  background-color: #f4f6f9;
-  font-family: Arial, sans-serif;
-}
+  * { box-sizing: border-box; }
 
-/* ===== Page Container ===== */
-.container {
-  width: 100%;
-  max-width: 1000px;
-  margin: 40px auto;
-  padding: 0 20px;
-}
+  /* iOS Safari horizontal scroll hard stop */
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    max-width: 100vw;      /* key */
+    overflow-x: hidden;    /* key */
+    background: var(--bg);
+    font-family: Arial, sans-serif;
+    color: var(--text);
+  }
 
-/* ===== Header ===== */
-.header {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  margin-bottom: 30px;
-  width: 100%;
-}
+  /* Wrapper also prevents any child overflow from enabling sideways pan */
+  .page {
+    width: 100%;
+    max-width: 100vw;      /* key */
+    overflow-x: hidden;    /* key */
+    overscroll-behavior-x: none;
+  }
 
-.header img {
-  height: 60px;
-  width: auto;
-  max-width: 100%;
-}
-
-.title-area {
-  text-align: center;
-  padding: 0 10px;
-}
-
-h1 {
-  margin: 0;
-  font-size: 26px;
-  color: #F36F21; /* 🟧 Wartburg orange */
-}
-
-.muted {
-  margin-top: 6px;
-  color: #555;
-  font-size: 15px;
-}
-
-/* ===== Grid ===== */
-.grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 25px;
-  width: 100%;
-}
-
-.card {
-  background: white;
-  border-radius: 14px;
-  padding: 22px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-  width: 100%;
-}
-
-h2 {
-  margin-top: 0;
-  color: #F36F21; /* orange accent */
-}
-
-label {
-  display: block;
-  font-weight: 600;
-  margin: 14px 0 6px;
-}
-
-input {
-  width: 100%;
-  padding: 8px 10px;
-  border-radius: 8px;
-  border: 1px solid #bbb;
-  font-size: 15px;
-}
-
-button {
-  margin-top: 18px;
-  padding: 8px 16px;
-  border-radius: 8px;
-  border: none;
-  background: #F36F21; /* 🟧 orange button */
-  color: white;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-button:hover {
-  background: #d95f15;
-}
-
-.result {
-  font-size: 18px;
-  margin-top: 14px;
-}
-
-.big {
-  font-size: 22px;
-  font-weight: bold;
-  color: #F36F21;
-}
-
-.warning {
-  color: darkred;
-  font-weight: bold;
-  margin-top: 12px;
-}
-
-.formula {
-  font-size: 13px;
-  margin-top: 16px;
-  color: #666;
-}
-
-/* ===== Footer ===== */
-footer {
-  margin-top: 60px;
-  padding-top: 20px;
-  border-top: 1px solid #ddd;
-  text-align: center;
-  font-size: 14px;
-  color: #555;
-}
-
-footer .name {
-  font-weight: bold;
-  color: #F36F21;
-}
-
-/* ===== Mobile ===== */
-@media (max-width: 900px) {
-
+  /* Centered content container */
   .container {
-    margin: 20px auto;
+    width: 100%;
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 0 16px;       /* reduced to avoid edge overflow on iOS */
   }
 
-  .grid {
-    grid-template-columns: 1fr;
-  }
-
+  /* Header */
   .header {
-    grid-template-columns: 1fr;
-    gap: 15px;
-    text-align: center;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 12px;             /* gap can contribute to overflow if large */
+    margin-bottom: 26px;
+    width: 100%;
+    max-width: 100%;
   }
 
   .header img {
-    margin: 0 auto;
+    height: 56px;
+    width: auto;
+    max-width: 100%;
+    display: block;
   }
-}
+
+  .title-area {
+    text-align: center;
+    padding: 0 6px;
+    min-width: 0;          /* prevents grid overflow */
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 26px;
+    color: var(--accent);
+    word-break: break-word;
+  }
+
+  .muted {
+    margin: 6px 0 0;
+    color: var(--muted);
+    font-size: 15px;
+  }
+
+  /* Cards grid */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;          /* prevents overflow */
+  }
+
+  h2 {
+    margin: 0 0 8px;
+    color: var(--accent);
+  }
+
+  label {
+    display: block;
+    font-weight: 600;
+    margin: 14px 0 6px;
+  }
+
+  input {
+    width: 100%;
+    max-width: 100%;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid #bbb;
+    font-size: 15px;
+    display: block;
+  }
+
+  details { max-width: 100%; }
+  summary { outline: none; }
+
+  button {
+    margin-top: 18px;
+    padding: 10px 16px;
+    border-radius: 10px;
+    border: none;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+  }
+
+  button:hover { background: var(--accent-dark); }
+
+  .result { font-size: 18px; margin-top: 14px; }
+
+  .big {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+  }
+
+  .warning {
+    color: darkred;
+    font-weight: 800;
+    margin-top: 12px;
+  }
+
+  .formula {
+    font-size: 13px;
+    margin-top: 16px;
+    color: #666;
+  }
+
+  footer {
+    margin-top: 50px;
+    padding-top: 18px;
+    border-top: 1px solid #ddd;
+    text-align: center;
+    font-size: 14px;
+    color: #555;
+    max-width: 100%;
+  }
+
+  footer .name {
+    font-weight: 800;
+    color: var(--accent);
+  }
+
+  /* Mobile */
+  @media (max-width: 900px) {
+    .container { margin: 20px auto; }
+
+    .grid { grid-template-columns: 1fr; }
+
+    .header {
+      grid-template-columns: 1fr;
+      justify-items: center;
+      text-align: center;
+      gap: 10px;
+    }
+
+    .header img { height: 54px; }
+  }
 </style>
 </head>
 
 <body>
+<div class="page">
 
-<div class="container">
+  <div class="container">
 
-  <div class="header">
-    <!-- Logos Swapped -->
-    <img src="wclogo.png" alt="Left Logo">
+    <div class="header">
+      <!-- Logos swapped -->
+      <img src="wclogo.png" alt="Wartburg Logo Left">
 
-    <div class="title-area">
-      <h1>Wartburg Algae Feeding Calculator</h1>
-      <p class="muted">
-        Converts spectrophotometer absorbance (445 nm) to stock concentration and required feeding volume.
-      </p>
+      <div class="title-area">
+        <h1>Wartburg Algae Feeding Calculator</h1>
+        <p class="muted">
+          Converts spectrophotometer absorbance (445 nm) to stock concentration and required feeding volume.
+        </p>
+      </div>
+
+      <img src="wklogo.png" alt="Wartburg Logo Right">
     </div>
 
-    <img src="wklogo.png" alt="Right Logo">
+    <div class="grid">
+
+      <div class="card">
+        <h2>Inputs</h2>
+
+        <label>Absorbance (ABS)</label>
+        <input id="abs" type="number" step="0.0001" value="0.7">
+
+        <label>Well volume (mL)</label>
+        <input id="wellVol" type="number" step="0.01" value="1.5">
+
+        <label>Target concentration (cells/mL)</label>
+        <input id="targetConc" type="number" step="100" value="30000">
+
+        <details style="margin-top:14px;">
+          <summary style="cursor:pointer; font-weight:bold;">Calibration Line</summary>
+
+          <label>Slope</label>
+          <input id="slope" type="number" step="0.0000000001" value="0.0000003">
+
+          <label>Intercept</label>
+          <input id="intercept" type="number" step="0.0001" value="0.0658">
+        </details>
+
+        <button type="button" onclick="calculate()">Calculate</button>
+      </div>
+
+      <div class="card">
+        <h2>Results</h2>
+
+        <div class="result">
+          Stock concentration (cells/mL):<br>
+          <span class="big" id="stockConc">—</span>
+        </div>
+
+        <div class="result">
+          Volume of stock algae to add (µL per well):<br>
+          <span class="big" id="volumeUL">—</span>
+        </div>
+
+        <div class="warning" id="warning"></div>
+
+        <div class="formula">
+          cells/mL = (ABS − intercept) / slope<br>
+          µL = 1000 × (target × wellVol) / stockConc
+        </div>
+      </div>
+
+    </div>
+
+    <footer>
+      Developed by <span class="name">Sameer Sarwar</span><br>
+      Biology & Computer Science | Wartburg College<br>
+      Version 1.0 | <span id="year"></span><br>
+      For laboratory use only. Ensure proper calibration before use.
+    </footer>
+
   </div>
-
-  <div class="grid">
-
-    <div class="card">
-      <h2>Inputs</h2>
-
-      <label>Absorbance (ABS)</label>
-      <input id="abs" type="number" step="0.0001" value="0.7">
-
-      <label>Well volume (mL)</label>
-      <input id="wellVol" type="number" step="0.01" value="1.5">
-
-      <label>Target concentration (cells/mL)</label>
-      <input id="targetConc" type="number" step="100" value="30000">
-
-      <details style="margin-top:14px;">
-        <summary style="cursor:pointer; font-weight:bold;">Calibration Line</summary>
-
-        <label>Slope</label>
-        <input id="slope" type="number" step="0.0000000001" value="0.0000003">
-
-        <label>Intercept</label>
-        <input id="intercept" type="number" step="0.0001" value="0.0658">
-      </details>
-
-      <button onclick="calculate()">Calculate</button>
-    </div>
-
-    <div class="card">
-      <h2>Results</h2>
-
-      <div class="result">
-        Stock concentration (cells/mL):<br>
-        <span class="big" id="stockConc">—</span>
-      </div>
-
-      <div class="result">
-        Volume of stock algae to add (µL per well):<br>
-        <span class="big" id="volumeUL">—</span>
-      </div>
-
-      <div class="warning" id="warning"></div>
-
-      <div class="formula">
-        cells/mL = (ABS − intercept) / slope<br>
-        µL = 1000 × (target × wellVol) / stockConc
-      </div>
-    </div>
-
-  </div>
-
-  <footer>
-    Developed by <span class="name">Sameer Sarwar</span><br>
-    Biology & Computer Science | Wartburg College<br>
-    Version 1.0 | <span id="year"></span><br>
-    For laboratory use only. Ensure proper calibration before use.
-  </footer>
-
 </div>
 
 <script>
-function calculate() {
+  function calculate() {
+    const abs = parseFloat(document.getElementById("abs").value);
+    const wellVol = parseFloat(document.getElementById("wellVol").value);
+    const target = parseFloat(document.getElementById("targetConc").value);
+    const slope = parseFloat(document.getElementById("slope").value);
+    const intercept = parseFloat(document.getElementById("intercept").value);
 
-  const abs = parseFloat(document.getElementById("abs").value);
-  const wellVol = parseFloat(document.getElementById("wellVol").value);
-  const target = parseFloat(document.getElementById("targetConc").value);
-  const slope = parseFloat(document.getElementById("slope").value);
-  const intercept = parseFloat(document.getElementById("intercept").value);
+    const warningBox = document.getElementById("warning");
+    warningBox.textContent = "";
 
-  const warningBox = document.getElementById("warning");
-  warningBox.textContent = "";
+    const stockConc = (abs - intercept) / slope;
 
-  const stockConc = (abs - intercept) / slope;
+    if (!isFinite(stockConc)) {
+      warningBox.textContent = "Please enter valid numbers.";
+      document.getElementById("stockConc").textContent = "—";
+      document.getElementById("volumeUL").textContent = "—";
+      return;
+    }
 
-  if (stockConc <= 0) {
-    warningBox.textContent =
-      "Warning: ABS is near or below intercept. Verify blank and calibration.";
+    if (stockConc <= 0) {
+      warningBox.textContent =
+        "Warning: ABS is near or below intercept. Verify blank and calibration.";
+    }
+
+    const volume_mL = (target * wellVol) / stockConc;
+    const volume_uL = volume_mL * 1000;
+
+    document.getElementById("stockConc").textContent =
+      Math.round(stockConc).toLocaleString();
+
+    document.getElementById("volumeUL").textContent =
+      (isFinite(volume_uL) ? volume_uL.toFixed(6) : "—");
   }
 
-  const volume_mL = (target * wellVol) / stockConc;
-  const volume_uL = volume_mL * 1000;
-
-  document.getElementById("stockConc").textContent =
-    Math.round(stockConc).toLocaleString();
-
-  document.getElementById("volumeUL").textContent =
-    volume_uL.toFixed(6);
-}
-
-document.getElementById("year").textContent =
-  new Date().getFullYear();
-
-calculate();
+  document.getElementById("year").textContent = new Date().getFullYear();
+  calculate();
 </script>
 
 </body>
