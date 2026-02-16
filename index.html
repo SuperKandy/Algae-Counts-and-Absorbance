@@ -1,178 +1,185 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Wartburg Algae Feeding Calculator</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wartburg Algae Feeding Calculator</title>
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="wklogo.png">
+<link rel="icon" type="image/png" href="wklogo.png">
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<style>
+* {
+  box-sizing: border-box;
+}
 
-    html, body {
-      margin: 0;
-      padding: 0;
-      overflow-x: hidden; /* 🔒 prevents side scrolling */
-    }
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden; /* 🔒 locks horizontal scrolling */
+  background-color: #f4f6f9;
+  font-family: Arial, sans-serif;
+}
 
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 1000px;
-      margin: 40px auto;
-      padding: 0 20px;
-      background-color: #f4f6f9;
-    }
+/* ===== Page Container ===== */
+.container {
+  width: 100%;
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
 
-    /* ===== Header Layout ===== */
-    .header {
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      align-items: center;
-      margin-bottom: 30px;
-      width: 100%;
-    }
+/* ===== Header ===== */
+.header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  margin-bottom: 30px;
+  width: 100%;
+}
 
-    .header img {
-      height: 60px;
-      width: auto;
-      max-width: 100%;
-    }
+.header img {
+  height: 60px;
+  width: auto;
+  max-width: 100%;
+}
 
-    .title-area {
-      text-align: center;
-      padding: 0 10px;
-    }
+.title-area {
+  text-align: center;
+  padding: 0 10px;
+}
 
-    h1 {
-      margin: 0;
-      font-size: 26px;
-    }
+h1 {
+  margin: 0;
+  font-size: 26px;
+  color: #F36F21; /* 🟧 Wartburg orange */
+}
 
-    .muted {
-      margin-top: 6px;
-      color: #555;
-      font-size: 15px;
-    }
+.muted {
+  margin-top: 6px;
+  color: #555;
+  font-size: 15px;
+}
 
-    /* ===== Content Layout ===== */
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 25px;
-      width: 100%;
-    }
+/* ===== Grid ===== */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+  width: 100%;
+}
 
-    .card {
-      background: white;
-      border-radius: 14px;
-      padding: 22px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-      width: 100%;
-    }
+.card {
+  background: white;
+  border-radius: 14px;
+  padding: 22px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+  width: 100%;
+}
 
-    h2 {
-      margin-top: 0;
-    }
+h2 {
+  margin-top: 0;
+  color: #F36F21; /* orange accent */
+}
 
-    label {
-      display: block;
-      font-weight: 600;
-      margin: 14px 0 6px;
-    }
+label {
+  display: block;
+  font-weight: 600;
+  margin: 14px 0 6px;
+}
 
-    input {
-      width: 100%;
-      padding: 8px 10px;
-      border-radius: 8px;
-      border: 1px solid #bbb;
-      font-size: 15px;
-    }
+input {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #bbb;
+  font-size: 15px;
+}
 
-    button {
-      margin-top: 18px;
-      padding: 8px 16px;
-      border-radius: 8px;
-      border: 1px solid #003366;
-      background: #003366;
-      color: white;
-      font-weight: 600;
-      cursor: pointer;
-    }
+button {
+  margin-top: 18px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  background: #F36F21; /* 🟧 orange button */
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
 
-    button:hover {
-      background: #002244;
-    }
+button:hover {
+  background: #d95f15;
+}
 
-    .result {
-      font-size: 18px;
-      margin-top: 14px;
-    }
+.result {
+  font-size: 18px;
+  margin-top: 14px;
+}
 
-    .big {
-      font-size: 22px;
-      font-weight: bold;
-      color: #003366;
-    }
+.big {
+  font-size: 22px;
+  font-weight: bold;
+  color: #F36F21;
+}
 
-    .warning {
-      color: darkred;
-      font-weight: bold;
-      margin-top: 12px;
-    }
+.warning {
+  color: darkred;
+  font-weight: bold;
+  margin-top: 12px;
+}
 
-    .formula {
-      font-size: 13px;
-      margin-top: 16px;
-      color: #666;
-    }
+.formula {
+  font-size: 13px;
+  margin-top: 16px;
+  color: #666;
+}
 
-    footer {
-      margin-top: 60px;
-      padding-top: 20px;
-      border-top: 1px solid #ddd;
-      text-align: center;
-      font-size: 14px;
-      color: #555;
-    }
+/* ===== Footer ===== */
+footer {
+  margin-top: 60px;
+  padding-top: 20px;
+  border-top: 1px solid #ddd;
+  text-align: center;
+  font-size: 14px;
+  color: #555;
+}
 
-    footer .name {
-      font-weight: bold;
-      color: #003366;
-    }
+footer .name {
+  font-weight: bold;
+  color: #F36F21;
+}
 
-    /* ===== Mobile ===== */
-    @media (max-width: 900px) {
+/* ===== Mobile ===== */
+@media (max-width: 900px) {
 
-      body {
-        margin: 20px auto;
-      }
+  .container {
+    margin: 20px auto;
+  }
 
-      .grid {
-        grid-template-columns: 1fr;
-      }
+  .grid {
+    grid-template-columns: 1fr;
+  }
 
-      .header {
-        grid-template-columns: 1fr;
-        gap: 15px;
-        text-align: center;
-      }
+  .header {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    text-align: center;
+  }
 
-      .header img {
-        margin: 0 auto;
-      }
-    }
-  </style>
+  .header img {
+    margin: 0 auto;
+  }
+}
+</style>
 </head>
 
 <body>
 
+<div class="container">
+
   <div class="header">
-    <!-- 🔁 LOGOS SWAPPED HERE -->
-    <img src="wclogo.png" alt="Wartburg Logo Left">
+    <!-- Logos Swapped -->
+    <img src="wclogo.png" alt="Left Logo">
 
     <div class="title-area">
       <h1>Wartburg Algae Feeding Calculator</h1>
@@ -181,7 +188,7 @@
       </p>
     </div>
 
-    <img src="wklogo.png" alt="Wartburg Logo Right">
+    <img src="wklogo.png" alt="Right Logo">
   </div>
 
   <div class="grid">
@@ -241,40 +248,42 @@
     For laboratory use only. Ensure proper calibration before use.
   </footer>
 
-  <script>
-    function calculate() {
+</div>
 
-      const abs = parseFloat(document.getElementById("abs").value);
-      const wellVol = parseFloat(document.getElementById("wellVol").value);
-      const target = parseFloat(document.getElementById("targetConc").value);
-      const slope = parseFloat(document.getElementById("slope").value);
-      const intercept = parseFloat(document.getElementById("intercept").value);
+<script>
+function calculate() {
 
-      const warningBox = document.getElementById("warning");
-      warningBox.textContent = "";
+  const abs = parseFloat(document.getElementById("abs").value);
+  const wellVol = parseFloat(document.getElementById("wellVol").value);
+  const target = parseFloat(document.getElementById("targetConc").value);
+  const slope = parseFloat(document.getElementById("slope").value);
+  const intercept = parseFloat(document.getElementById("intercept").value);
 
-      const stockConc = (abs - intercept) / slope;
+  const warningBox = document.getElementById("warning");
+  warningBox.textContent = "";
 
-      if (stockConc <= 0) {
-        warningBox.textContent =
-          "Warning: ABS is near or below intercept. Verify blank and calibration.";
-      }
+  const stockConc = (abs - intercept) / slope;
 
-      const volume_mL = (target * wellVol) / stockConc;
-      const volume_uL = volume_mL * 1000;
+  if (stockConc <= 0) {
+    warningBox.textContent =
+      "Warning: ABS is near or below intercept. Verify blank and calibration.";
+  }
 
-      document.getElementById("stockConc").textContent =
-        Math.round(stockConc).toLocaleString();
+  const volume_mL = (target * wellVol) / stockConc;
+  const volume_uL = volume_mL * 1000;
 
-      document.getElementById("volumeUL").textContent =
-        volume_uL.toFixed(6);
-    }
+  document.getElementById("stockConc").textContent =
+    Math.round(stockConc).toLocaleString();
 
-    document.getElementById("year").textContent =
-      new Date().getFullYear();
+  document.getElementById("volumeUL").textContent =
+    volume_uL.toFixed(6);
+}
 
-    calculate();
-  </script>
+document.getElementById("year").textContent =
+  new Date().getFullYear();
+
+calculate();
+</script>
 
 </body>
 </html>
