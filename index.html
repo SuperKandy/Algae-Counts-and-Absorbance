@@ -1,63 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Wartburg Algae Feeding Calculator</title>
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="wklogo.png">
-  <link rel="apple-touch-icon" href="wklogo.png">
 
   <style>
     * { box-sizing: border-box; }
 
     body {
       font-family: Arial, sans-serif;
-      max-width: 900px;
+      max-width: 1000px;
       margin: 40px auto;
-      padding: 0 16px;
-      background-color: #f8f9fa;
+      padding: 0 20px;
+      background-color: #f4f6f9;
     }
 
-    h1 {
-      margin-bottom: 4px;
-    }
-
-    .muted {
-      color: #555;
-      margin-top: 0;
-    }
-
+    /* ===== Header Layout ===== */
     .header {
-      display: flex;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
       align-items: center;
-      gap: 16px;
-      margin-bottom: 20px;
+      margin-bottom: 30px;
     }
 
     .header img {
-      height: 50px;
+      height: 60px;
       width: auto;
     }
 
+    .title-area {
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    .muted {
+      margin-top: 6px;
+      color: #555;
+      font-size: 15px;
+    }
+
+    /* ===== Content Layout ===== */
     .grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 20px;
+      gap: 25px;
     }
 
     .card {
       background: white;
       border-radius: 14px;
-      padding: 20px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      padding: 22px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+
+    h2 {
+      margin-top: 0;
     }
 
     label {
       display: block;
       font-weight: 600;
-      margin: 12px 0 6px;
+      margin: 14px 0 6px;
     }
 
     input {
@@ -69,22 +80,23 @@
     }
 
     button {
-      margin-top: 16px;
-      padding: 8px 14px;
+      margin-top: 18px;
+      padding: 8px 16px;
       border-radius: 8px;
-      border: 1px solid #333;
-      background: white;
-      cursor: pointer;
+      border: 1px solid #003366;
+      background: #003366;
+      color: white;
       font-weight: 600;
+      cursor: pointer;
     }
 
     button:hover {
-      background: #f0f0f0;
+      background: #002244;
     }
 
     .result {
       font-size: 18px;
-      margin-top: 12px;
+      margin-top: 14px;
     }
 
     .big {
@@ -93,21 +105,45 @@
       color: #003366;
     }
 
-    .formula {
-      font-size: 13px;
-      margin-top: 14px;
-      color: #666;
-    }
-
     .warning {
       color: darkred;
       font-weight: bold;
-      margin-top: 10px;
+      margin-top: 12px;
     }
 
-    @media (max-width: 768px) {
+    .formula {
+      font-size: 13px;
+      margin-top: 16px;
+      color: #666;
+    }
+
+    footer {
+      margin-top: 60px;
+      padding-top: 20px;
+      border-top: 1px solid #ddd;
+      text-align: center;
+      font-size: 14px;
+      color: #555;
+    }
+
+    footer .name {
+      font-weight: bold;
+      color: #003366;
+    }
+
+    @media (max-width: 900px) {
       .grid {
         grid-template-columns: 1fr;
+      }
+
+      .header {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        text-align: center;
+      }
+
+      .header img {
+        margin: 0 auto;
       }
     }
   </style>
@@ -116,12 +152,16 @@
 <body>
 
   <div class="header">
-    <img src="wklogo.png" alt="Wartburg logo">
-    <img src="wclogo.png" alt="Wartburg College logo">
-    <div>
+    <img src="wklogo.png" alt="Wartburg Logo Left">
+
+    <div class="title-area">
       <h1>Wartburg Algae Feeding Calculator</h1>
-      <p class="muted">Enter absorbance (ABS) to calculate stock concentration and feeding volume.</p>
+      <p class="muted">
+        Converts spectrophotometer absorbance (445 nm) to stock concentration and required feeding volume.
+      </p>
     </div>
+
+    <img src="wclogo.png" alt="Wartburg Logo Right">
   </div>
 
   <div class="grid">
@@ -174,6 +214,13 @@
 
   </div>
 
+  <footer>
+    Developed by <span class="name">Sameer Sarwar</span><br>
+    Biology & Computer Science | Wartburg College<br>
+    Version 1.0 | <span id="year"></span><br>
+    For laboratory use only. Ensure proper calibration before use.
+  </footer>
+
   <script>
     function calculate() {
 
@@ -186,15 +233,11 @@
       const warningBox = document.getElementById("warning");
       warningBox.textContent = "";
 
-      if (!abs || !wellVol || !target || !slope) {
-        warningBox.textContent = "Please enter valid numbers.";
-        return;
-      }
-
       const stockConc = (abs - intercept) / slope;
 
       if (stockConc <= 0) {
-        warningBox.textContent = "Warning: ABS is near/below intercept. Check blank or calibration.";
+        warningBox.textContent =
+          "Warning: ABS is near or below intercept. Verify blank and calibration.";
       }
 
       const volume_mL = (target * wellVol) / stockConc;
@@ -206,6 +249,9 @@
       document.getElementById("volumeUL").textContent =
         volume_uL.toFixed(6);
     }
+
+    document.getElementById("year").textContent =
+      new Date().getFullYear();
 
     calculate();
   </script>
