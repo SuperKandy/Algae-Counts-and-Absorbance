@@ -2,335 +2,263 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Wartburg Algae Feeding Calculator</title>
 
 <link rel="icon" type="image/png" href="wklogo.png">
 
 <style>
-  :root{
-    --accent:#F36F21;
-    --accent-dark:#d95f15;
-    --bg:#f4f6f9;
-    --text:#1a1a1a;
-    --muted:#555;
-  }
+:root{
+  --accent:#F36F21;
+  --accent-dark:#d95f15;
+  --bg:#f4f6f9;
+}
 
-  * { box-sizing: border-box; }
+*{ box-sizing:border-box; }
 
-  /* HARD WIDTH CLAMP (prevents 1px overflow on iOS Safari) */
-  html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    max-width: 100%;
-    overflow-x: clip;      /* best when supported */
-    background: var(--bg);
-    font-family: Arial, sans-serif;
-    color: var(--text);
-  }
-  /* fallback for older Safari */
-  @supports not (overflow-x: clip) {
-    html, body { overflow-x: hidden; }
-  }
+html, body{
+  margin:0;
+  padding:0;
+  overflow-x:hidden;
+  background:var(--bg);
+  font-family:Arial, sans-serif;
+}
 
-  /* Extra safety wrappers */
-  .page, .container, .grid, .card {
-    width: 100%;
-    max-width: 100%;
-    overflow-x: clip;
-  }
-  @supports not (overflow-x: clip) {
-    .page, .container, .grid, .card { overflow-x: hidden; }
-  }
+.container{
+  max-width:1000px;
+  margin:30px auto;
+  padding:0 14px;
+}
 
-  .container{
-    max-width: 980px;
-    margin: 32px auto;
-    padding: 0 12px; /* smaller padding reduces chance of overflow */
-  }
+/* Header */
+.header{
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  gap:10px;
+  margin-bottom:25px;
+}
 
-  /* Header */
-  .header{
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    align-items: center;
-    gap: 8px;
-    width: 100%;
-    max-width: 100%;
-    margin-bottom: 20px;
-  }
+.header img{
+  height:55px;
+  max-width:100%;
+}
 
-  /* Make sure images can NEVER force width */
-  img{
-    display: block;
-    max-width: 100%;
-    height: auto;
-  }
+.title-area{
+  text-align:center;
+}
 
-  .header img{
-    height: 54px;
-    width: auto;
-    max-width: 100%;
-    flex-shrink: 1;
-  }
+h1{
+  margin:0;
+  color:var(--accent);
+}
 
-  .title-area{
-    min-width: 0; /* critical in grid layouts */
-    max-width: 100%;
-    text-align: center;
-    padding: 0 6px;
-  }
+.muted{
+  font-size:14px;
+  color:#555;
+  margin-top:5px;
+}
 
-  h1{
-    margin: 0;
-    font-size: 24px;
-    color: var(--accent);
-    word-break: break-word;
-  }
+/* Equation Display */
+.equation-box{
+  text-align:center;
+  background:white;
+  padding:12px;
+  border-radius:10px;
+  margin-bottom:20px;
+  font-weight:bold;
+  color:var(--accent);
+  font-size:18px;
+}
 
-  .muted{
-    margin: 6px 0 0;
-    color: var(--muted);
-    font-size: 14px;
-  }
+/* Grid */
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+}
 
-  /* Content grid */
+.card{
+  background:white;
+  padding:18px;
+  border-radius:12px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.08);
+}
+
+label{
+  font-weight:600;
+  display:block;
+  margin-top:14px;
+}
+
+.small-orange{
+  font-size:12px;
+  color:var(--accent);
+  margin-top:3px;
+}
+
+input{
+  width:100%;
+  padding:7px 9px;
+  border-radius:8px;
+  border:1px solid #bbb;
+  margin-top:4px;
+}
+
+button{
+  width:100%;
+  margin-top:16px;
+  padding:8px;
+  background:var(--accent);
+  border:none;
+  color:white;
+  font-weight:bold;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+button:hover{
+  background:var(--accent-dark);
+}
+
+.big{
+  font-size:20px;
+  font-weight:bold;
+  color:var(--accent);
+}
+
+footer{
+  margin-top:40px;
+  text-align:center;
+  font-size:13px;
+  color:#555;
+}
+
+footer .name{
+  color:var(--accent);
+  font-weight:bold;
+}
+
+/* Mobile */
+@media(max-width:768px){
   .grid{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    width: 100%;
-    max-width: 100%;
+    grid-template-columns:1fr;
   }
-
-  .card{
-    background: #fff;
-    border-radius: 12px;
-    padding: 18px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    min-width: 0;  /* prevents overflow inside grid */
+  .header{
+    grid-template-columns:1fr;
+    text-align:center;
   }
-
-  h2{
-    margin: 0 0 8px;
-    font-size: 18px;
-    color: var(--accent);
+  .header img{
+    margin:0 auto;
+    height:45px;
   }
-
-  label{
-    display:block;
-    font-weight: 700;
-    margin: 12px 0 6px;
-    font-size: 14px;
-  }
-
-  input, button, details, summary{
-    max-width: 100%;
-  }
-
-  input{
-    width: 100%;
-    padding: 8px 10px;
-    border-radius: 8px;
-    border: 1px solid #bbb;
-    font-size: 14px;
-    display:block;
-  }
-
-  button{
-    width: 100%;
-    margin-top: 14px;
-    padding: 10px 14px;
-    border: none;
-    border-radius: 10px;
-    background: var(--accent);
-    color: #fff;
-    font-weight: 800;
-    cursor: pointer;
-  }
-  button:hover{ background: var(--accent-dark); }
-
-  .result{
-    font-size: 16px;
-    margin-top: 12px;
-  }
-
-  .big{
-    font-size: 20px;
-    font-weight: 900;
-    color: var(--accent);
-  }
-
-  .warning{
-    margin-top: 10px;
-    color: darkred;
-    font-weight: 800;
-    font-size: 14px;
-  }
-
-  .formula{
-    margin-top: 14px;
-    font-size: 12px;
-    color: #666;
-    overflow-wrap: anywhere; /* prevents formula lines from overflowing */
-  }
-
-  footer{
-    margin-top: 40px;
-    padding-top: 16px;
-    border-top: 1px solid #ddd;
-    text-align: center;
-    font-size: 13px;
-    color: #555;
-  }
-  footer .name{ color: var(--accent); font-weight: 900; }
-
-  /* ===== iPHONE WIDTH FIXES ===== */
-  @media (max-width: 600px){
-    .container{ padding: 0 10px; margin: 18px auto; }
-
-    /* Stack header on mobile and shrink everything WIDTH-wise */
-    .header{
-      grid-template-columns: 1fr;
-      justify-items: center;
-      text-align: center;
-      gap: 8px;
-    }
-
-    .header img{
-      height: 44px; /* smaller logos */
-    }
-
-    h1{ font-size: 20px; }
-    .muted{ font-size: 13px; }
-
-    .grid{
-      grid-template-columns: 1fr;
-      gap: 12px;
-    }
-
-    .card{ padding: 14px; }
-    .big{ font-size: 19px; }
-  }
+}
 </style>
 </head>
 
 <body>
-<div class="page">
-  <div class="container">
 
-    <div class="header">
-      <!-- swapped logos -->
-      <img src="wclogo.png" alt="Wartburg Logo Left">
+<div class="container">
 
-      <div class="title-area">
-        <h1>Wartburg Algae Feeding Calculator</h1>
-        <p class="muted">
-          Converts absorbance (445 nm) to stock concentration and feeding volume.
-        </p>
-      </div>
+  <div class="header">
+    <img src="wclogo.png" alt="Left Logo">
 
-      <img src="wklogo.png" alt="Wartburg Logo Right">
+    <div class="title-area">
+      <h1>Wartburg Algae Feeding Calculator</h1>
+      <p class="muted">
+        Demonstrates the dilution equation used in lab.
+      </p>
     </div>
 
-    <div class="grid">
+    <img src="wklogo.png" alt="Right Logo">
+  </div>
 
-      <div class="card">
-        <h2>Inputs</h2>
+  <!-- Equation Visible -->
+  <div class="equation-box">
+    C₁V₁ = C₂V₂
+  </div>
 
-        <label>Absorbance (ABS)</label>
-        <input id="abs" type="number" step="0.0001" value="0.67">
+  <div class="grid">
 
-        <label>Well volume (mL)</label>
-        <input id="wellVol" type="number" step="0.01" value="1.5">
+    <div class="card">
+      <h3>Inputs</h3>
 
-        <label>Target concentration (cells/mL)</label>
-        <input id="targetConc" type="number" step="100" value="30000">
-
-        <details style="margin-top:12px;">
-          <summary style="cursor:pointer; font-weight:800;">Calibration Line</summary>
-
-          <label>Slope</label>
-          <input id="slope" type="number" step="0.0000000001" value="0.0000003">
-
-          <label>Intercept</label>
-          <input id="intercept" type="number" step="0.0001" value="0.0658">
-        </details>
-
-        <button type="button" onclick="calculate()">Calculate</button>
+      <label>Absorbance (ABS)</label>
+      <div class="small-orange">
+        Used to calculate C₁ (Stock concentration)
       </div>
+      <input id="abs" type="number" step="0.0001" value="0.7">
 
-      <div class="card">
-        <h2>Results</h2>
-
-        <div class="result">
-          Stock concentration (cells/mL):<br>
-          <span class="big" id="stockConc">—</span>
-        </div>
-
-        <div class="result">
-          Volume of stock algae to add (µL per well):<br>
-          <span class="big" id="volumeUL">—</span>
-        </div>
-
-        <div class="warning" id="warning"></div>
-
-        <div class="formula">
-          cells/mL = (ABS − intercept) / slope<br>
-          µL = 1000 × (target × wellVol) / stockConc
-        </div>
+      <label>Well Volume (mL)</label>
+      <div class="small-orange">
+        V₂ (Final volume per well)
       </div>
+      <input id="wellVol" type="number" step="0.01" value="1.5">
 
+      <label>Target Concentration (cells/mL)</label>
+      <div class="small-orange">
+        C₂ (Desired final concentration)
+      </div>
+      <input id="targetConc" type="number" step="100" value="30000">
+
+      <button onclick="calculate()">Calculate</button>
     </div>
 
-    <footer>
-      Developed by <span class="name">Sameer Sarwar</span><br>
-      Biology Major & Computer Science Minor | Wartburg College<br>
-      Version 1.0 | <span id="year"></span><br>
-      For laboratory use only. Ensure proper calibration before use.
-    </footer>
+    <div class="card">
+      <h3>Results</h3>
+
+      <p>
+        Calculated C₁ (cells/mL):<br>
+        <span class="big" id="stockConc">—</span>
+      </p>
+
+      <p>
+        V₁ Required (µL per well):<br>
+        <span class="big" id="volumeUL">—</span>
+      </p>
+
+      <div style="font-size:12px;color:#666;">
+        Rearranged: V₁ = (C₂ × V₂) / C₁
+      </div>
+    </div>
 
   </div>
+
+  <footer>
+    Developed by <span class="name">Sameer Sarwar</span><br>
+    Biology Major & Computer Science Minor | Wartburg College<br>
+    Version 1.1 | <span id="year"></span>
+  </footer>
+
 </div>
 
 <script>
-  function calculate() {
-    const abs = parseFloat(document.getElementById("abs").value);
-    const wellVol = parseFloat(document.getElementById("wellVol").value);
-    const target = parseFloat(document.getElementById("targetConc").value);
-    const slope = parseFloat(document.getElementById("slope").value);
-    const intercept = parseFloat(document.getElementById("intercept").value);
+function calculate(){
 
-    const warningBox = document.getElementById("warning");
-    warningBox.textContent = "";
+  const abs = parseFloat(document.getElementById("abs").value);
+  const wellVol = parseFloat(document.getElementById("wellVol").value);
+  const target = parseFloat(document.getElementById("targetConc").value);
 
-    const stockConc = (abs - intercept) / slope;
+  const slope = 0.0000003;
+  const intercept = 0.0658;
 
-    if (!isFinite(stockConc)) {
-      warningBox.textContent = "Please enter valid numbers.";
-      document.getElementById("stockConc").textContent = "—";
-      document.getElementById("volumeUL").textContent = "—";
-      return;
-    }
+  const stockConc = (abs - intercept) / slope;
 
-    if (stockConc <= 0) {
-      warningBox.textContent =
-        "Warning: ABS is near or below intercept. Verify blank and calibration.";
-    }
+  const volume_mL = (target * wellVol) / stockConc;
+  const volume_uL = volume_mL * 1000;
 
-    const volume_mL = (target * wellVol) / stockConc;
-    const volume_uL = volume_mL * 1000;
+  document.getElementById("stockConc").textContent =
+    Math.round(stockConc).toLocaleString();
 
-    document.getElementById("stockConc").textContent =
-      Math.round(stockConc).toLocaleString();
+  document.getElementById("volumeUL").textContent =
+    volume_uL.toFixed(6);
+}
 
-    document.getElementById("volumeUL").textContent =
-      (isFinite(volume_uL) ? volume_uL.toFixed(6) : "—");
-  }
+document.getElementById("year").textContent =
+  new Date().getFullYear();
 
-  document.getElementById("year").textContent = new Date().getFullYear();
-  calculate();
+calculate();
 </script>
+
 </body>
 </html>
