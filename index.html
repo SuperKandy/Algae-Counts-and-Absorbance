@@ -187,7 +187,7 @@ footer .name{
       <div class="small-orange">
         Used to calculate C₁ (Stock concentration)
       </div>
-      <input id="abs" type="number" step="0.0001" value="0.7">
+      <input id="abs" type="number" step="0.0001" value="0.67">
 
       <label>Well Volume (mL)</label>
       <div class="small-orange">
@@ -248,10 +248,10 @@ function calculate(){
   const volume_uL = volume_mL * 1000;
 
   document.getElementById("stockConc").textContent =
-    Math.round(stockConc).toLocaleString();
+    stockConc.toFixed(3);
 
   document.getElementById("volumeUL").textContent =
-    volume_uL.toFixed(6);
+    volume_uL.toFixed(3);
 }
 
 document.getElementById("year").textContent =
