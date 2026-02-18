@@ -248,7 +248,7 @@ function calculate(){
   const volume_uL = volume_mL * 1000;
 
   document.getElementById("stockConc").textContent =
-    stockConc.toFixed(3);
+    Math.round(stockConc).toLocaleString();
 
   document.getElementById("volumeUL").textContent =
     volume_uL.toFixed(3);
