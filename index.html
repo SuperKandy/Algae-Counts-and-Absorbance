@@ -8,469 +8,355 @@
 <link rel="icon" type="image/png" href="wklogo.png">
 
 <style>
-  :root{
-    --accent:#F36F21;
-    --accent-dark:#d95f15;
-    --bg:#f4f6f9;
-    --text:#1a1a1a;
-    --muted:#555;
-  }
+:root{
+  --accent:#F36F21;
+  --accent-dark:#d95f15;
+  --bg:#f4f6f9;
+  --text:#1a1a1a;
+  --muted:#555;
+}
 
-  * { box-sizing: border-box; }
+*{ box-sizing:border-box; }
 
-  html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    max-width: 100%;
-    overflow-x: clip;
-    background: var(--bg);
-    font-family: Arial, sans-serif;
-    color: var(--text);
-  }
-  @supports not (overflow-x: clip) {
-    html, body { overflow-x: hidden; }
-  }
+html, body{
+  margin:0;
+  padding:0;
+  overflow-x:hidden;
+  background:var(--bg);
+  font-family:Arial, sans-serif;
+}
 
-  .page, .container, .grid, .card { width: 100%; max-width: 100%; overflow-x: clip; }
-  @supports not (overflow-x: clip) {
-    .page, .container, .grid, .card { overflow-x: hidden; }
-  }
+.container{
+  max-width:980px;
+  margin:28px auto;
+  padding:0 12px;
+}
 
-  .container{
-    max-width: 980px;
-    margin: 28px auto;
-    padding: 0 10px;
-  }
+/* HEADER */
+.header{
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  gap:8px;
+  margin-bottom:16px;
+}
 
-  .header{
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 18px;
-    width: 100%;
-  }
+.header img{
+  height:50px;
+  max-width:100%;
+}
 
-  img{ display:block; max-width:100%; height:auto; }
+.title-area{
+  text-align:center;
+}
 
-  .header img{
-    height: 50px;
-    width: auto;
-  }
+h1{
+  margin:0;
+  font-size:22px;
+  color:var(--accent);
+}
 
-  .title-area{
-    min-width: 0;
-    text-align: center;
-    padding: 0 6px;
-  }
+.muted{
+  font-size:13px;
+  color:var(--muted);
+  margin-top:5px;
+}
 
-  h1{
-    margin: 0;
-    font-size: 22px;
-    color: var(--accent);
-    word-break: break-word;
-  }
+/* EQUATION */
+.equation-box{
+  background:white;
+  border-radius:10px;
+  padding:10px;
+  text-align:center;
+  margin-bottom:16px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.06);
+}
 
-  .muted{
-    margin: 6px 0 0;
-    color: var(--muted);
-    font-size: 13px;
-  }
+.eq{
+  font-weight:900;
+  font-size:18px;
+  color:var(--accent);
+}
 
-  .equation-box{
-    background: #fff;
-    border-radius: 10px;
-    padding: 10px 12px;
-    text-align: center;
-    margin: 12px 0 16px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-  }
+.eq-sub{
+  font-size:12px;
+  margin-top:6px;
+  color:#666;
+}
 
-  .eq{
-    font-weight: 900;
-    color: var(--accent);
-    font-size: 18px;
-  }
-  .eq-sub{
-    margin-top: 6px;
-    font-size: 12px;
-    color: #666;
-  }
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
 
+.card{
+  background:white;
+  padding:16px;
+  border-radius:12px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.08);
+}
+
+h2{
+  margin-top:0;
+  color:var(--accent);
+}
+
+label{
+  font-weight:800;
+  display:block;
+  margin-top:12px;
+  font-size:13px;
+}
+
+.hint{
+  font-size:12px;
+  color:var(--accent);
+  margin-bottom:4px;
+  font-weight:800;
+}
+
+input{
+  width:100%;
+  padding:8px;
+  border-radius:8px;
+  border:1px solid #bbb;
+  font-size:14px;
+}
+
+button{
+  width:100%;
+  margin-top:14px;
+  padding:10px;
+  background:var(--accent);
+  color:white;
+  border:none;
+  border-radius:10px;
+  font-weight:900;
+  cursor:pointer;
+}
+
+button:hover{
+  background:var(--accent-dark);
+}
+
+.result{
+  margin-top:10px;
+  font-size:14px;
+}
+
+.big{
+  font-size:20px;
+  font-weight:900;
+  color:var(--accent);
+  display:inline-block;
+  margin-top:4px;
+}
+
+.warning{
+  color:darkred;
+  font-weight:900;
+  font-size:13px;
+  margin-top:8px;
+}
+
+.formula{
+  font-size:12px;
+  color:#666;
+  margin-top:10px;
+}
+
+footer{
+  margin-top:30px;
+  text-align:center;
+  font-size:13px;
+  color:#555;
+}
+
+footer .name{
+  color:var(--accent);
+  font-weight:900;
+}
+
+@media(max-width:768px){
   .grid{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
+    grid-template-columns:1fr;
   }
-
-  .card{
-    background: #fff;
-    border-radius: 12px;
-    padding: 16px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    min-width: 0;
+  .header{
+    grid-template-columns:1fr;
+    text-align:center;
   }
-
-  h2{
-    margin: 0 0 8px;
-    font-size: 18px;
-    color: var(--accent);
+  .header img{
+    margin:0 auto;
+    height:44px;
   }
-
-  label{
-    display:block;
-    font-weight: 800;
-    margin: 12px 0 6px;
-    font-size: 13px;
-  }
-
-  .hint{
-    margin-top: -4px;
-    margin-bottom: 6px;
-    font-size: 12px;
-    color: var(--accent);
-    font-weight: 800;
-  }
-
-  input{
-    width: 100%;
-    padding: 8px 10px;
-    border-radius: 8px;
-    border: 1px solid #bbb;
-    font-size: 14px;
-    display:block;
-    max-width: 100%;
-  }
-
-  details, summary{ max-width:100%; }
-
-  button{
-    width: 100%;
-    margin-top: 14px;
-    padding: 10px 14px;
-    border: none;
-    border-radius: 10px;
-    background: var(--accent);
-    color: #fff;
-    font-weight: 900;
-    cursor: pointer;
-  }
-  button:hover{ background: var(--accent-dark); }
-
-  .result{
-    font-size: 15px;
-    margin-top: 10px;
-    line-height: 1.45;
-  }
-
-  .big{
-    display:inline-block;
-    margin-top: 4px;
-    font-size: 20px;
-    font-weight: 900;
-    color: var(--accent);
-  }
-
-  .warning{
-    margin-top: 10px;
-    color: darkred;
-    font-weight: 900;
-    font-size: 13px;
-  }
-
-  .formula{
-    margin-top: 12px;
-    font-size: 12px;
-    color: #666;
-    overflow-wrap: anywhere;
-  }
-
-  .divider{
-    margin: 14px 0;
-    border: none;
-    border-top: 1px solid #eee;
-  }
-
-  .mini-title{
-    font-weight: 900;
-    color: var(--accent);
-    margin: 0 0 8px;
-    font-size: 14px;
-  }
-
-  .mini-note{
-    font-size: 12px;
-    color: #666;
-    margin: 0 0 10px;
-  }
-
-  footer{
-    margin-top: 36px;
-    padding-top: 16px;
-    border-top: 1px solid #ddd;
-    text-align: center;
-    font-size: 13px;
-    color: #555;
-  }
-  footer .name{ color: var(--accent); font-weight: 900; }
-
-  @media (max-width: 600px){
-    .container{ margin: 16px auto; padding: 0 10px; }
-
-    .grid{ grid-template-columns: 1fr; gap: 12px; }
-
-    .header{
-      grid-template-columns: 1fr;
-      justify-items: center;
-      text-align: center;
-      gap: 8px;
-    }
-    .header img{ height: 44px; }
-
-    h1{ font-size: 20px; }
-  }
+}
 </style>
 </head>
 
 <body>
-<div class="page">
-  <div class="container">
 
-    <div class="header">
-      <img src="wclogo.png" alt="Wartburg Logo Left">
+<div class="container">
 
-      <div class="title-area">
-        <h1>Wartburg Algae Feeding Calculator</h1>
-        <p class="muted">Shows how values are calculated using C₁V₁ = C₂V₂.</p>
-      </div>
+  <div class="header">
+    <img src="wclogo.png">
+    <div class="title-area">
+      <h1>Wartburg Algae Feeding Calculator</h1>
+      <p class="muted">Shows how values are calculated using C₁V₁ = C₂V₂.</p>
+    </div>
+    <img src="wklogo.png">
+  </div>
 
-      <img src="wklogo.png" alt="Wartburg Logo Right">
+  <div class="equation-box">
+    <div class="eq">C₁V₁ = C₂V₂</div>
+    <div class="eq-sub">Solve for V₁ → V₁ = (C₂ × V₂) / C₁</div>
+  </div>
+
+  <div class="grid">
+
+    <!-- ALGAE INPUTS -->
+    <div class="card">
+      <h2>Algae Inputs</h2>
+
+      <label>Absorbance (ABS)</label>
+      <div class="hint">Used to calculate C₁ (stock concentration)</div>
+      <input id="abs" type="number" step="0.01" value="0.67">
+
+      <label>Well volume (mL)</label>
+      <div class="hint">V₂ (final volume per well)</div>
+      <input id="wellVol" type="number" step="0.01" value="1.5">
+
+      <label>Target concentration (cells/mL)</label>
+      <div class="hint">C₂ (desired final concentration)</div>
+      <input id="targetConc" type="number" step="100" value="30000">
+
+      <button onclick="calculateAlgae()">Calculate Algae</button>
     </div>
 
-    <div class="equation-box">
-      <div class="eq">C₁V₁ = C₂V₂</div>
-      <div class="eq-sub">We solve for <b>V₁</b>: &nbsp; V₁ = (C₂ × V₂) / C₁</div>
-    </div>
+    <!-- ALGAE RESULTS -->
+    <div class="card">
+      <h2>Algae Results</h2>
 
-    <div class="grid">
-
-      <!-- ALGAE INPUTS -->
-      <div class="card">
-        <h2>Algae Inputs</h2>
-
-        <label>Absorbance (ABS)</label>
-        <div class="hint">Used to calculate C₁ (stock concentration)</div>
-        <input id="abs" type="number" step="0.0001" value="0.67">
-
-        <label>Well volume (mL)</label>
-        <div class="hint">V₂ (final volume per well)</div>
-        <input id="wellVol" type="number" step="0.01" value="1.5">
-
-        <label>Target concentration (cells/mL)</label>
-        <div class="hint">C₂ (desired final concentration)</div>
-        <input id="targetConc" type="number" step="100" value="30000">
-
-        <details style="margin-top:12px;">
-          <summary style="cursor:pointer; font-weight:900; color: var(--accent);">Calibration Line (C₁ from ABS)</summary>
-
-          <label>Slope</label>
-          <input id="slope" type="number" step="0.0000000001" value="0.0000003">
-
-          <label>Intercept</label>
-          <input id="intercept" type="number" step="0.0001" value="0.0658">
-
-          <div class="formula" style="margin-top:10px;">
-            ABS = slope × (cells/mL) + intercept
-          </div>
-        </details>
-
-        <button type="button" onclick="calculateAlgae()">Calculate Algae</button>
+      <div class="result">
+        C₁ Stock concentration (cells/mL):<br>
+        <span class="big" id="stockConc">—</span>
       </div>
 
-      <!-- RESULTS + SALINITY MIXER -->
-      <div class="card">
-        <h2>Results</h2>
-
-        <div class="result">
-          C₁ Stock concentration (cells/mL):<br>
-          <span class="big" id="stockConc">—</span>
-        </div>
-
-        <div class="result">
-          V₁ Volume of stock algae to add (µL per well):<br>
-          <span class="big" id="volumeUL">—</span>
-        </div>
-
-        <div class="result">
-          Recommended pipette:<br>
-          <span class="big" id="pipetteType">—</span>
-        </div>
-
-        <div class="warning" id="warningAlgae"></div>
-
-        <div class="formula">
-          Using C₁V₁=C₂V₂ → V₁ = (C₂ × V₂) / C₁
-        </div>
-
-        <hr class="divider">
-
-        <!-- SALINITY / DILUTION MIXER (ppt) -->
-        <div class="mini-title">Salinity Mixer (ppt) — C₁V₁ = C₂V₂</div>
-        <div class="mini-note">
-          Use this if you have a stock salinity and need to make a new salinity at a chosen final volume.
-        </div>
-
-        <label>Stock salinity (ppt)</label>
-        <div class="hint">C₁ (what you have)</div>
-        <input id="salC1" type="number" step="0.01" placeholder="Example: 35.00">
-
-        <label>Desired salinity (ppt)</label>
-        <div class="hint">C₂ (what you need)</div>
-        <input id="salC2" type="number" step="0.01" placeholder="Example: 28.00">
-
-        <label>Final volume you want to make (mL)</label>
-        <div class="hint">V₂ (how much final solution you need)</div>
-        <input id="salV2" type="number" step="0.1" placeholder="Example: 100.0">
-
-        <button type="button" onclick="calculateSalinity()">Calculate Salinity Mix</button>
-
-        <div class="result" style="margin-top:12px;">
-          V₁ Stock volume needed (mL):<br>
-          <span class="big" id="salV1mL">—</span>
-        </div>
-
-        <div class="result">
-          Diluent volume to add (mL) = V₂ − V₁:<br>
-          <span class="big" id="salDiluent">—</span>
-        </div>
-
-        <!-- Substitution line (students see numbers plugged into equation) -->
-        <div class="formula" id="salSubstitution">—</div>
-
-        <div class="warning" id="warningSal"></div>
-
-        <div class="formula">
-          V₁ = (C₂ × V₂) / C₁ &nbsp;&nbsp; | &nbsp;&nbsp; Diluent = V₂ − V₁
-        </div>
+      <div class="result">
+        V₁ Volume of stock algae to add (µL per well):<br>
+        <span class="big" id="volumeUL">—</span>
       </div>
 
-    </div>
+      <div class="result">
+        Recommended pipette:<br>
+        <span class="big" id="pipetteType">—</span>
+      </div>
 
-    <footer>
-      Developed by <span class="name">Sameer Sarwar</span><br>
-      Biology Major & Computer Science Minor | Wartburg College<br>
-      Version 2.0 | <span id="year"></span><br>
-      For laboratory use only. Ensure proper calibration before use.
-    </footer>
+      <div class="warning" id="warningAlgae"></div>
+
+      <div class="formula">
+        V₁ = (C₂ × V₂) / C₁
+      </div>
+    </div>
 
   </div>
+
+  <!-- SALINITY CALCULATOR (OWN BOX NOW) -->
+  <div class="card" style="margin-top:20px;">
+    <h2>Salinity Mixer (ppt) — C₁V₁ = C₂V₂</h2>
+
+    <label>Stock salinity (ppt)</label>
+    <div class="hint">C₁ (what you have)</div>
+    <input id="salC1" type="number" step="0.01">
+
+    <label>Desired salinity (ppt)</label>
+    <div class="hint">C₂ (what you need)</div>
+    <input id="salC2" type="number" step="0.01">
+
+    <label>Final volume you want to make (mL)</label>
+    <div class="hint">V₂ (final volume)</div>
+    <input id="salV2" type="number" step="0.1">
+
+    <button onclick="calculateSalinity()">Calculate Salinity Mix</button>
+
+    <div class="result">
+      V₁ Stock volume needed (mL):<br>
+      <span class="big" id="salV1mL">—</span>
+    </div>
+
+    <div class="result">
+      Diluent volume (mL):<br>
+      <span class="big" id="salDiluent">—</span>
+    </div>
+
+    <div class="formula" id="salSubstitution">—</div>
+
+    <div class="warning" id="warningSal"></div>
+  </div>
+
+  <footer>
+    Developed by <span class="name">Sameer Sarwar</span><br>
+    Biology Major & Computer Science Minor | Wartburg College<br>
+    Version 2.1 | <span id="year"></span>
+  </footer>
+
 </div>
 
 <script>
-  function pipetteSuggestion(uL){
-    if (!isFinite(uL) || uL <= 0) return "—";
-    if (uL <= 20) return "P20 (0.5–20 µL)";
-    if (uL <= 200) return "P200 (20–200 µL)";
-    if (uL <= 1000) return "P1000 (100–1000 µL)";
-    return "Serological / graduated pipette";
-  }
+function pipetteSuggestion(uL){
+  if (uL <= 20) return "P20";
+  if (uL <= 200) return "P200";
+  if (uL <= 1000) return "P1000";
+  return "Serological pipette";
+}
 
-  function calculateAlgae(){
-    const abs = parseFloat(document.getElementById("abs").value);
-    const wellVol = parseFloat(document.getElementById("wellVol").value);
-    const target = parseFloat(document.getElementById("targetConc").value);
-    const slope = parseFloat(document.getElementById("slope").value);
-    const intercept = parseFloat(document.getElementById("intercept").value);
+function calculateAlgae(){
+  const abs = parseFloat(document.getElementById("abs").value);
+  const wellVol = parseFloat(document.getElementById("wellVol").value);
+  const target = parseFloat(document.getElementById("targetConc").value);
 
-    const warn = document.getElementById("warningAlgae");
-    warn.textContent = "";
+  const slope = 0.0000003;
+  const intercept = 0.0658;
 
-    if (![abs, wellVol, target, slope, intercept].every(v => isFinite(v))) {
-      warn.textContent = "Please enter valid numbers for all algae inputs.";
-      document.getElementById("stockConc").textContent = "—";
-      document.getElementById("volumeUL").textContent = "—";
-      document.getElementById("pipetteType").textContent = "—";
-      return;
-    }
+  const stockConc = (abs - intercept) / slope;
+  const volume_mL = (target * wellVol) / stockConc;
+  const volume_uL = volume_mL * 1000;
 
-    if (slope === 0) {
-      warn.textContent = "Slope cannot be 0.";
-      return;
-    }
+  document.getElementById("stockConc").textContent =
+    Math.round(stockConc).toLocaleString();
 
-    const stockConc = (abs - intercept) / slope; // cells/mL
+  document.getElementById("volumeUL").textContent =
+    volume_uL.toFixed(3);
 
-    if (stockConc <= 0) {
-      warn.textContent = "Warning: ABS is near/below intercept → C₁ ≤ 0. Check blank/calibration.";
-    }
+  document.getElementById("pipetteType").textContent =
+    pipetteSuggestion(volume_uL);
+}
 
-    const volume_mL = (stockConc > 0) ? ((target * wellVol) / stockConc) : NaN;
-    const volume_uL = volume_mL * 1000;
+function calculateSalinity(){
+  const C1 = parseFloat(document.getElementById("salC1").value);
+  const C2 = parseFloat(document.getElementById("salC2").value);
+  const V2 = parseFloat(document.getElementById("salV2").value);
 
-    // C1 as integer, V1 in µL to 3 decimals
-    document.getElementById("stockConc").textContent = isFinite(stockConc)
-      ? Math.round(stockConc).toLocaleString()
-      : "—";
+  if (!C1 || !C2 || !V2) return;
 
-    document.getElementById("volumeUL").textContent = isFinite(volume_uL)
-      ? volume_uL.toFixed(3)
-      : "—";
+  const V1 = (C2 * V2) / C1;
+  const diluent = V2 - V1;
 
-    document.getElementById("pipetteType").textContent = pipetteSuggestion(volume_uL);
-  }
+  document.getElementById("salV1mL").textContent =
+    V1.toFixed(3);
 
-  function calculateSalinity(){
-    const C1 = parseFloat(document.getElementById("salC1").value);
-    const C2 = parseFloat(document.getElementById("salC2").value);
-    const V2 = parseFloat(document.getElementById("salV2").value);
+  document.getElementById("salDiluent").textContent =
+    diluent.toFixed(3);
 
-    const warn = document.getElementById("warningSal");
-    const sub = document.getElementById("salSubstitution");
+  document.getElementById("salSubstitution").innerHTML =
+    `V₁ = (${C2.toFixed(2)} ppt × ${V2.toFixed(2)} mL) ÷ ${C1.toFixed(2)} ppt = <b>${V1.toFixed(3)} mL</b>`;
+}
 
-    warn.textContent = "";
-    sub.textContent = "—";
+document.getElementById("year").textContent =
+  new Date().getFullYear();
 
-    document.getElementById("salV1mL").textContent = "—";
-    document.getElementById("salDiluent").textContent = "—";
-
-    if (![C1, C2, V2].every(v => isFinite(v))) {
-      warn.textContent = "Please enter valid numbers for C₁ (ppt), C₂ (ppt), and V₂ (mL).";
-      return;
-    }
-    if (C1 <= 0 || V2 <= 0) {
-      warn.textContent = "C₁ and V₂ must be greater than 0.";
-      return;
-    }
-    if (C2 <= 0) {
-      warn.textContent = "C₂ must be greater than 0.";
-      return;
-    }
-    if (C2 > C1) {
-      warn.textContent = "C₂ cannot be greater than C₁ using only stock + diluent.";
-      return;
-    }
-
-    const V1_mL = (C2 * V2) / C1;
-    const diluent_mL = V2 - V1_mL;
-
-    if (V1_mL < 0 || diluent_mL < 0) {
-      warn.textContent = "Check inputs: calculated volumes are not physically valid.";
-      return;
-    }
-
-    document.getElementById("salV1mL").textContent = V1_mL.toFixed(3);
-    document.getElementById("salDiluent").textContent = diluent_mL.toFixed(3);
-
-    // Substitution display (students see plug-in step)
-    sub.innerHTML =
-      `V₁ = (${C2.toFixed(2)} ppt × ${V2.toFixed(2)} mL) ÷ ${C1.toFixed(2)} ppt = <b>${V1_mL.toFixed(3)} mL</b>`;
-  }
-
-  document.getElementById("year").textContent = new Date().getFullYear();
-
-  // initial algae calculation so page isn't blank
-  calculateAlgae();
+calculateAlgae();
 </script>
 
 </body>
