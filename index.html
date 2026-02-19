@@ -255,13 +255,13 @@
 
     <div class="grid">
 
-      <!-- INPUTS -->
+      <!-- ALGAE INPUTS -->
       <div class="card">
         <h2>Algae Inputs</h2>
 
         <label>Absorbance (ABS)</label>
         <div class="hint">Used to calculate C₁ (stock concentration)</div>
-        <input id="abs" type="number" step="0.0001" value="0.7">
+        <input id="abs" type="number" step="0.0001" value="0.67">
 
         <label>Well volume (mL)</label>
         <div class="hint">V₂ (final volume per well)</div>
@@ -288,7 +288,7 @@
         <button type="button" onclick="calculateAlgae()">Calculate Algae</button>
       </div>
 
-      <!-- RESULTS + NEW SALINITY FEATURE UNDER IT -->
+      <!-- RESULTS + SALINITY MIXER -->
       <div class="card">
         <h2>Results</h2>
 
@@ -315,17 +315,17 @@
 
         <hr class="divider">
 
-        <!-- NEW FEATURE: SALINITY / DILUTION MIXER -->
-        <div class="mini-title">Salinity / Dilution Mixer (C₁V₁ = C₂V₂)</div>
+        <!-- SALINITY / DILUTION MIXER (ppt) -->
+        <div class="mini-title">Salinity Mixer (ppt) — C₁V₁ = C₂V₂</div>
         <div class="mini-note">
-          Use this if you have a stock salinity (or stock concentration) and need to make a new salinity at a chosen final volume.
+          Use this if you have a stock salinity and need to make a new salinity at a chosen final volume.
         </div>
 
-        <label>Stock salinity (or stock concentration)</label>
+        <label>Stock salinity (ppt)</label>
         <div class="hint">C₁ (what you have)</div>
         <input id="salC1" type="number" step="0.01" placeholder="Example: 35.00">
 
-        <label>Desired salinity (or desired concentration)</label>
+        <label>Desired salinity (ppt)</label>
         <div class="hint">C₂ (what you need)</div>
         <input id="salC2" type="number" step="0.01" placeholder="Example: 28.00">
 
@@ -341,14 +341,12 @@
         </div>
 
         <div class="result">
-          V₁ Stock volume needed (µL):<br>
-          <span class="big" id="salV1uL">—</span>
-        </div>
-
-        <div class="result">
-          Add diluent (mL) = V₂ − V₁:<br>
+          Diluent volume to add (mL) = V₂ − V₁:<br>
           <span class="big" id="salDiluent">—</span>
         </div>
+
+        <!-- Substitution line (students see numbers plugged into equation) -->
+        <div class="formula" id="salSubstitution">—</div>
 
         <div class="warning" id="warningSal"></div>
 
@@ -361,8 +359,8 @@
 
     <footer>
       Developed by <span class="name">Sameer Sarwar</span><br>
-      Biology & Computer Science | Wartburg College<br>
-      Version 1.2 | <span id="year"></span><br>
+      Biology Major & Computer Science Minor | Wartburg College<br>
+      Version 2.0 | <span id="year"></span><br>
       For laboratory use only. Ensure proper calibration before use.
     </footer>
 
@@ -428,14 +426,16 @@
     const V2 = parseFloat(document.getElementById("salV2").value);
 
     const warn = document.getElementById("warningSal");
+    const sub = document.getElementById("salSubstitution");
+
     warn.textContent = "";
+    sub.textContent = "—";
 
     document.getElementById("salV1mL").textContent = "—";
-    document.getElementById("salV1uL").textContent = "—";
     document.getElementById("salDiluent").textContent = "—";
 
     if (![C1, C2, V2].every(v => isFinite(v))) {
-      warn.textContent = "Please enter valid numbers for C₁, C₂, and V₂.";
+      warn.textContent = "Please enter valid numbers for C₁ (ppt), C₂ (ppt), and V₂ (mL).";
       return;
     }
     if (C1 <= 0 || V2 <= 0) {
@@ -447,14 +447,12 @@
       return;
     }
     if (C2 > C1) {
-      warn.textContent = "C₂ cannot be greater than C₁ using dilution with only stock + diluent.";
+      warn.textContent = "C₂ cannot be greater than C₁ using only stock + diluent.";
       return;
     }
 
-    // V1 = (C2 * V2) / C1
     const V1_mL = (C2 * V2) / C1;
     const diluent_mL = V2 - V1_mL;
-    const V1_uL = V1_mL * 1000;
 
     if (V1_mL < 0 || diluent_mL < 0) {
       warn.textContent = "Check inputs: calculated volumes are not physically valid.";
@@ -462,13 +460,16 @@
     }
 
     document.getElementById("salV1mL").textContent = V1_mL.toFixed(3);
-    document.getElementById("salV1uL").textContent = V1_uL.toFixed(0);
     document.getElementById("salDiluent").textContent = diluent_mL.toFixed(3);
+
+    // Substitution display (students see plug-in step)
+    sub.innerHTML =
+      `V₁ = (${C2.toFixed(2)} ppt × ${V2.toFixed(2)} mL) ÷ ${C1.toFixed(2)} ppt = <b>${V1_mL.toFixed(3)} mL</b>`;
   }
 
   document.getElementById("year").textContent = new Date().getFullYear();
 
-  // initial calc for algae so page isn't blank
+  // initial algae calculation so page isn't blank
   calculateAlgae();
 </script>
 
