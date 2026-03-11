@@ -24,6 +24,7 @@ html, body{
   overflow-x:hidden;
   background:var(--bg);
   font-family:Arial, sans-serif;
+  color:var(--text);
 }
 
 .container{
@@ -101,6 +102,13 @@ h1{
 h2{
   margin-top:0;
   color:var(--accent);
+  font-size:20px;
+}
+
+h3{
+  color:var(--accent);
+  margin:18px 0 8px;
+  font-size:16px;
 }
 
 label{
@@ -144,6 +152,7 @@ button:hover{
 .result{
   margin-top:10px;
   font-size:14px;
+  line-height:1.45;
 }
 
 .big{
@@ -165,6 +174,36 @@ button:hover{
   font-size:12px;
   color:#666;
   margin-top:10px;
+}
+
+.mode-box{
+  display:flex;
+  flex-wrap:wrap;
+  gap:14px;
+  margin:10px 0 6px;
+  padding:10px 12px;
+  background:#fff7f2;
+  border:1px solid #ffd2b7;
+  border-radius:10px;
+}
+
+.mode-box label{
+  margin:0;
+  font-size:13px;
+  font-weight:800;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  cursor:pointer;
+}
+
+.mode-box input[type="radio"]{
+  width:auto;
+  margin:0;
+}
+
+.hidden{
+  display:none;
 }
 
 footer{
@@ -200,12 +239,12 @@ footer .name{
 <div class="container">
 
   <div class="header">
-    <img src="wclogo.png">
+    <img src="wclogo.png" alt="Wartburg logo">
     <div class="title-area">
       <h1>Wartburg Algae Feeding Calculator</h1>
       <p class="muted">Shows how values are calculated using C₁V₁ = C₂V₂.</p>
     </div>
-    <img src="wklogo.png">
+    <img src="wklogo.png" alt="Wartburg logo">
   </div>
 
   <div class="equation-box">
@@ -221,7 +260,7 @@ footer .name{
 
       <label>Absorbance (ABS)</label>
       <div class="hint">Used to calculate C₁ (stock concentration)</div>
-      <input id="abs" type="number" step="0.01" value="0.67">
+      <input id="abs" type="number" step="0.0001" value="0.67">
 
       <label>Well volume (mL)</label>
       <div class="hint">V₂ (final volume per well)</div>
@@ -230,6 +269,18 @@ footer .name{
       <label>Target concentration (cells/mL)</label>
       <div class="hint">C₂ (desired final concentration)</div>
       <input id="targetConc" type="number" step="100" value="30000">
+
+      <label>Slope</label>
+      <div class="hint">Used with absorbance to calculate C₁</div>
+      <input id="slope" type="number" step="0.0000000001" value="0.0000003">
+
+      <label>Intercept</label>
+      <div class="hint">Used with absorbance to calculate C₁</div>
+      <input id="intercept" type="number" step="0.0001" value="0.0658">
+
+      <div class="formula">
+        ABS = slope × (cells/mL) + intercept
+      </div>
 
       <button onclick="calculateAlgae()">Calculate Algae</button>
     </div>
@@ -262,49 +313,111 @@ footer .name{
 
   </div>
 
-  <!-- SALINITY CALCULATOR (OWN BOX NOW) -->
+  <!-- SALINITY CALCULATOR -->
   <div class="card" style="margin-top:20px;">
-    <h2>Salinity Mixer (ppt) — C₁V₁ = C₂V₂</h2>
+    <h2>Salinity Calculator (ppt)</h2>
 
-    <label>Stock salinity (ppt)</label>
-    <div class="hint">C₁ (what you have)</div>
-    <input id="salC1" type="number" step="0.01">
-
-    <label>Desired salinity (ppt)</label>
-    <div class="hint">C₂ (what you need)</div>
-    <input id="salC2" type="number" step="0.01">
-
-    <label>Final volume you want to make (mL)</label>
-    <div class="hint">V₂ (final volume)</div>
-    <input id="salV2" type="number" step="0.1">
-
-    <button onclick="calculateSalinity()">Calculate Salinity Mix</button>
-
-    <div class="result">
-      V₁ Stock volume needed (mL):<br>
-      <span class="big" id="salV1mL">—</span>
+    <div class="mode-box">
+      <label>
+        <input type="radio" name="salMode" value="water" checked onchange="toggleSalinityMode()">
+        Mix with water
+      </label>
+      <label>
+        <input type="radio" name="salMode" value="twostock" onchange="toggleSalinityMode()">
+        Mix two salinities
+      </label>
     </div>
 
-    <div class="result">
-      Diluent volume (mL):<br>
-      <span class="big" id="salDiluent">—</span>
+    <div class="formula">
+      Choose the method that matches what is available in lab.
     </div>
 
-    <div class="formula" id="salSubstitution">—</div>
+    <!-- WATER DILUTION MODE -->
+    <div id="waterMode">
+      <h3>Mix with Water</h3>
+      <div class="formula">
+        Use this when you have one stock salinity and water (0 ppt).
+      </div>
 
-    <div class="warning" id="warningSal"></div>
+      <label>Stock salinity (ppt)</label>
+      <div class="hint">C₁ (what you have)</div>
+      <input id="salC1" type="number" step="0.01" placeholder="Example: 35.00">
+
+      <label>Desired salinity (ppt)</label>
+      <div class="hint">C₂ (what you need)</div>
+      <input id="salC2" type="number" step="0.01" placeholder="Example: 28.00">
+
+      <label>Final volume you want to make (mL)</label>
+      <div class="hint">V₂ (final volume)</div>
+      <input id="salV2" type="number" step="0.1" placeholder="Example: 100.0">
+
+      <button onclick="calculateSalinityWater()">Calculate Water Mix</button>
+
+      <div class="result">
+        V₁ Stock volume needed (mL):<br>
+        <span class="big" id="salV1mL">—</span>
+      </div>
+
+      <div class="result">
+        Water to add (mL):<br>
+        <span class="big" id="salDiluent">—</span>
+      </div>
+
+      <div class="formula" id="salSubstitution">—</div>
+      <div class="warning" id="warningSalWater"></div>
+    </div>
+
+    <!-- TWO STOCK MODE -->
+    <div id="twoStockMode" class="hidden">
+      <h3>Mix Two Salinities</h3>
+      <div class="formula">
+        Use this when you have a lower salinity and a higher salinity, and want to mix them to reach a target.
+      </div>
+
+      <label>Lower salinity available (ppt)</label>
+      <div class="hint">Cₐ (for example: 30 ppt)</div>
+      <input id="lowSal" type="number" step="0.01" placeholder="Example: 30.00">
+
+      <label>Higher salinity available (ppt)</label>
+      <div class="hint">Cᵦ (for example: 70 ppt)</div>
+      <input id="highSal" type="number" step="0.01" placeholder="Example: 70.00">
+
+      <label>Target salinity (ppt)</label>
+      <div class="hint">Cₜ (what you want to make)</div>
+      <input id="targetSal" type="number" step="0.01" placeholder="Example: 35.00">
+
+      <label>Final volume you want to make (mL)</label>
+      <div class="hint">Vₜ (total final volume)</div>
+      <input id="finalVol" type="number" step="0.1" placeholder="Example: 100.0">
+
+      <button onclick="calculateTwoStockMix()">Calculate Two-Stock Mix</button>
+
+      <div class="result">
+        Volume of lower salinity to use (mL):<br>
+        <span class="big" id="lowVol">—</span>
+      </div>
+
+      <div class="result">
+        Volume of higher salinity to use (mL):<br>
+        <span class="big" id="highVol">—</span>
+      </div>
+
+      <div class="formula" id="mixEquation">—</div>
+      <div class="warning" id="warningSalTwoStock"></div>
+    </div>
   </div>
 
   <footer>
     Developed by <span class="name">Sameer Sarwar</span><br>
     Biology Major & Computer Science Minor | Wartburg College<br>
-    Version 2.1 | <span id="year"></span>
+    Version 2.2 | <span id="year"></span>
   </footer>
 
 </div>
 
 <script>
 function pipetteSuggestion(uL){
+  if (!isFinite(uL) || uL <= 0) return "—";
   if (uL <= 20) return "P20";
   if (uL <= 200) return "P200";
   if (uL <= 1000) return "P1000";
@@ -315,48 +428,138 @@ function calculateAlgae(){
   const abs = parseFloat(document.getElementById("abs").value);
   const wellVol = parseFloat(document.getElementById("wellVol").value);
   const target = parseFloat(document.getElementById("targetConc").value);
+  const slope = parseFloat(document.getElementById("slope").value);
+  const intercept = parseFloat(document.getElementById("intercept").value);
 
-  const slope = 0.0000003;
-  const intercept = 0.0658;
+  const warning = document.getElementById("warningAlgae");
+  warning.textContent = "";
+
+  if (![abs, wellVol, target, slope, intercept].every(v => isFinite(v))) {
+    warning.textContent = "Please enter valid numbers for all algae inputs.";
+    document.getElementById("stockConc").textContent = "—";
+    document.getElementById("volumeUL").textContent = "—";
+    document.getElementById("pipetteType").textContent = "—";
+    return;
+  }
+
+  if (slope === 0) {
+    warning.textContent = "Slope cannot be 0.";
+    return;
+  }
 
   const stockConc = (abs - intercept) / slope;
   const volume_mL = (target * wellVol) / stockConc;
   const volume_uL = volume_mL * 1000;
 
-  document.getElementById("stockConc").textContent =
-    Math.round(stockConc).toLocaleString();
+  if (stockConc <= 0) {
+    warning.textContent = "Warning: calculated stock concentration is not valid. Check absorbance, slope, and intercept.";
+  }
 
-  document.getElementById("volumeUL").textContent =
-    volume_uL.toFixed(3);
+  document.getElementById("stockConc").textContent = isFinite(stockConc)
+    ? Math.round(stockConc).toLocaleString()
+    : "—";
 
-  document.getElementById("pipetteType").textContent =
-    pipetteSuggestion(volume_uL);
+  document.getElementById("volumeUL").textContent = isFinite(volume_uL)
+    ? volume_uL.toFixed(3)
+    : "—";
+
+  document.getElementById("pipetteType").textContent = pipetteSuggestion(volume_uL);
 }
 
-function calculateSalinity(){
+function toggleSalinityMode(){
+  const mode = document.querySelector('input[name="salMode"]:checked').value;
+  document.getElementById("waterMode").classList.toggle("hidden", mode !== "water");
+  document.getElementById("twoStockMode").classList.toggle("hidden", mode !== "twostock");
+}
+
+function calculateSalinityWater(){
   const C1 = parseFloat(document.getElementById("salC1").value);
   const C2 = parseFloat(document.getElementById("salC2").value);
   const V2 = parseFloat(document.getElementById("salV2").value);
 
-  if (!C1 || !C2 || !V2) return;
+  const warn = document.getElementById("warningSalWater");
+  const sub = document.getElementById("salSubstitution");
+
+  warn.textContent = "";
+  sub.textContent = "—";
+  document.getElementById("salV1mL").textContent = "—";
+  document.getElementById("salDiluent").textContent = "—";
+
+  if (![C1, C2, V2].every(v => isFinite(v))) {
+    warn.textContent = "Please enter valid numbers for stock salinity, desired salinity, and final volume.";
+    return;
+  }
+
+  if (C1 <= 0 || C2 <= 0 || V2 <= 0) {
+    warn.textContent = "All values must be greater than 0.";
+    return;
+  }
+
+  if (C2 > C1) {
+    warn.textContent = "Desired salinity cannot be greater than stock salinity when mixing only with water.";
+    return;
+  }
 
   const V1 = (C2 * V2) / C1;
-  const diluent = V2 - V1;
+  const water = V2 - V1;
 
-  document.getElementById("salV1mL").textContent =
-    V1.toFixed(3);
+  document.getElementById("salV1mL").textContent = V1.toFixed(3);
+  document.getElementById("salDiluent").textContent = water.toFixed(3);
 
-  document.getElementById("salDiluent").textContent =
-    diluent.toFixed(3);
-
-  document.getElementById("salSubstitution").innerHTML =
-    `V₁ = (${C2.toFixed(2)} ppt × ${V2.toFixed(2)} mL) ÷ ${C1.toFixed(2)} ppt = <b>${V1.toFixed(3)} mL</b>`;
+  sub.innerHTML =
+    `V₁ = (${C2.toFixed(2)} ppt × ${V2.toFixed(2)} mL) ÷ ${C1.toFixed(2)} ppt = <b>${V1.toFixed(3)} mL</b><br>` +
+    `Water = ${V2.toFixed(2)} mL − ${V1.toFixed(3)} mL = <b>${water.toFixed(3)} mL</b>`;
 }
 
-document.getElementById("year").textContent =
-  new Date().getFullYear();
+function calculateTwoStockMix(){
+  const Ca = parseFloat(document.getElementById("lowSal").value);
+  const Cb = parseFloat(document.getElementById("highSal").value);
+  const Ct = parseFloat(document.getElementById("targetSal").value);
+  const Vt = parseFloat(document.getElementById("finalVol").value);
 
+  const warn = document.getElementById("warningSalTwoStock");
+  const eq = document.getElementById("mixEquation");
+
+  warn.textContent = "";
+  eq.textContent = "—";
+  document.getElementById("lowVol").textContent = "—";
+  document.getElementById("highVol").textContent = "—";
+
+  if (![Ca, Cb, Ct, Vt].every(v => isFinite(v))) {
+    warn.textContent = "Please enter valid numbers for both salinities, target salinity, and final volume.";
+    return;
+  }
+
+  if (Ca <= 0 || Cb <= 0 || Ct <= 0 || Vt <= 0) {
+    warn.textContent = "All values must be greater than 0.";
+    return;
+  }
+
+  if (Ca >= Cb) {
+    warn.textContent = "The lower salinity must be less than the higher salinity.";
+    return;
+  }
+
+  if (Ct < Ca || Ct > Cb) {
+    warn.textContent = "Target salinity must be between the lower and higher salinity values.";
+    return;
+  }
+
+  const Va = ((Cb - Ct) * Vt) / (Cb - Ca);
+  const Vb = Vt - Va;
+
+  document.getElementById("lowVol").textContent = Va.toFixed(3);
+  document.getElementById("highVol").textContent = Vb.toFixed(3);
+
+  eq.innerHTML =
+    `Using CₐVₐ + CᵦVᵦ = CₜVₜ<br>` +
+    `Vₐ = [(${Cb.toFixed(2)} − ${Ct.toFixed(2)}) × ${Vt.toFixed(2)}] ÷ (${Cb.toFixed(2)} − ${Ca.toFixed(2)}) = <b>${Va.toFixed(3)} mL</b><br>` +
+    `Vᵦ = ${Vt.toFixed(2)} − ${Va.toFixed(3)} = <b>${Vb.toFixed(3)} mL</b>`;
+}
+
+document.getElementById("year").textContent = new Date().getFullYear();
 calculateAlgae();
+toggleSalinityMode();
 </script>
 
 </body>
